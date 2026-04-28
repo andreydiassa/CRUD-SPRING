@@ -1,14 +1,13 @@
 package Dreystudy.cadastro_usuario.controller;
 
 import Dreystudy.cadastro_usuario.business.UsuarioService;
-import Dreystudy.cadastro_usuario.infrastructure.entitys.Usuario;
-import lombok.Getter;
+import Dreystudy.cadastro_usuario.dto.request.UsuarioRequestDTO;
+import Dreystudy.cadastro_usuario.dto.response.UsuarioResponseDTO;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.function.RequestPredicate;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @RestController
 @RequestMapping("/usuario")
@@ -18,28 +17,29 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
 
     @PostMapping
-    public ResponseEntity<Void> salvarUsuario(@RequestBody Usuario usuario){
-       usuarioService.salvarUsuario(usuario);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<UsuarioResponseDTO> salvarUsuario(@RequestBody @Valid  UsuarioRequestDTO usuarioRequestDTO){
+        UsuarioResponseDTO usuarioCriado = usuarioService.salvarUsuario(usuarioRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioCriado);
 
     }
 
     @GetMapping
-    public ResponseEntity<Usuario> buscarUsuarioPorEmail(@RequestParam String email){
-        return ResponseEntity.ok(usuarioService.buscarUsuarioPorEmail(email));
+    public ResponseEntity<UsuarioResponseDTO> buscarUsuarioPorEmail(@RequestParam String email){
+        UsuarioResponseDTO usuarioResponseDTO = usuarioService.buscarUsuarioPorEmail(email);
+        return ResponseEntity.ok(usuarioResponseDTO);
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deletarUsuarioPorEmail(@RequestParam String email){
         usuarioService.deletarUsuarioPorEmail(email);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
 
     }
 
     @PutMapping
-    public ResponseEntity<Void> atualizarUsuarioPorId(@RequestParam String email , @RequestBody Usuario usuario){
-        usuarioService.atualizarUsuarioPorEmail(email, usuario);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<UsuarioResponseDTO> atualizarUsuarioPorId(@RequestParam String email , @RequestBody @Valid UsuarioRequestDTO usuarioRequestDTO){
+        UsuarioResponseDTO usuarioResponseDTO = usuarioService.atualizarUsuarioPorEmail(email, usuarioRequestDTO);
+        return ResponseEntity.ok(usuarioResponseDTO);
     }
 
 }
