@@ -1,5 +1,6 @@
 package Dreystudy.cadastro_usuario.infrastructure.entitys;
 
+import Dreystudy.cadastro_usuario.dto.request.UsuarioRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,13 +11,11 @@ import lombok.*;
 @Builder
 @Entity
 @Table (name = "TB_USUARIO")
-
 public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "email", unique = true)
     private String email;
@@ -25,6 +24,12 @@ public class Usuario {
     private String nome;
 
     @Column(name = "celular")
-    private Double celular;
+    private String celular;
+
+    public void atualizarDados(UsuarioRequestDTO usuarioRequestDTO){
+        this.setEmail(usuarioRequestDTO.email());
+        this.setNome(usuarioRequestDTO.nome());
+        this.setCelular(usuarioRequestDTO.celular());
+    }
 }
 
